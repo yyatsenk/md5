@@ -12,12 +12,7 @@
 
 #include "ssl.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
  
-// leftrotate function definition
 #define LEFTROTATE(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 
 
@@ -272,22 +267,46 @@ int sha256_test()
     {
         printf("%2.2x", buf[i]);
  
-        //printf("%x\n");
     }
-
-
 	return(pass);
 }
 
-int main(int argc, char **argv)
+int main(int argv, char **argc)
 {
-    if (argc < 2) {
-        printf("usage: %s 'string'\n", argv[0]);
+	t_mda5 md5_data;
+    char *msg;
+    size_t len;
+    t_flags flags;
+    int i = 3;
+    if (argv > 8 && argv < 2) {
+        printf("usage: %s 'string'\n", argc[0]);
         return 1;
     }
-    t_mda5 md5_data;
-    char *msg = argv[1];
-    size_t len = strlen(msg);
+    while (i < 7)
+    {
+    	if (!ft_strcmp(argc[i], "-q"))
+    		flags.q = 1;
+    	if (!ft_strcmp(argc[i], "-p"))
+    		flags.p = 1;
+    	if (!ft_strcmp(argc[i], "-r"))
+    		flags.r = 1;
+    	if (!ft_strcmp(argc[i], "-s"))
+    	{
+    		flags.s = 1;
+    		flags.str = argc[++i];
+    	}
+    	i++;
+    }
+    if (!ft_strcmp(argc[3], "md5"))
+    {
+    	md5_data.flags = flags;
+
+    }
+    else if (!ft_strcmp(argc[3], "sha256"))
+    {
+	}
+    msg = argc[1];
+    len = ft_strlen(msg);
  
         md5(msg, len, &md5_data);
  
@@ -311,10 +330,3 @@ int main(int argc, char **argv)
 
 	return(0);
 }
-/*
-int main(int argv, char **argc)
-{
-    char arr[] = {'1','2'};
-    ft_strlen(arr);
-    return (0);
-}*/

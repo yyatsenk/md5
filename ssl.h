@@ -54,6 +54,8 @@ typedef struct  s_flags
     unsigned q;
     unsigned r;
     unsigned s;
+    char *filename;
+    char *str;
 }               t_flags;
 
 typedef struct  s_abcd
