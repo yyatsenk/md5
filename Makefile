@@ -19,7 +19,7 @@ RED=\033[31m
 YELL=\033[33m
 
 cc = gcc
-C_FLAGS = #-Wall -Wextra -Werror 
+C_FLAGS = -g# -Wall -Wextra -Werror 
 
 OBJ_PATH = ./obj/
 LFT_PATH = ./libft/

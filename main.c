@@ -277,12 +277,18 @@ int main(int argv, char **argc)
     char *msg;
     size_t len;
     t_flags flags;
-    int i = 3;
+    flags.q = 0;
+    flags.p = 0;
+    flags.s = 0;
+    flags.r = 0;
+    flags.str = 0;
+    flags.filename = 0;
+    int i = 2;
     if (argv > 8 && argv < 2) {
         printf("usage: %s 'string'\n", argc[0]);
         return 1;
     }
-    while (i < 7)
+    while (i < argv)
     {
     	if (!ft_strcmp(argc[i], "-q"))
     		flags.q = 1;
@@ -297,19 +303,16 @@ int main(int argv, char **argc)
     	}
     	i++;
     }
-    if (!ft_strcmp(argc[3], "md5"))
+    if (!ft_strcmp(argc[1], "md5"))
     {
     	md5_data.flags = flags;
-
     }
-    else if (!ft_strcmp(argc[3], "sha256"))
+    else if (!ft_strcmp(argc[1], "sha256"))
     {
 	}
-    msg = argc[1];
-    len = ft_strlen(msg);
- 
-        md5(msg, len, &md5_data);
- 
+ 		msg = argc[2];
+    	len = ft_strlen(msg);
+    	md5(msg, len, &md5_data);
     uint8_t *p;
  
     
