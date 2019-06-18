@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 
-NAME = ssl_md5
+NAME = ft_ssl
 
 NOC=\033[0m
 GRE=\033[32m
@@ -36,7 +36,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 		@make -C $(LFT_PATH)
-		@$(CC) -o $(NAME) -L $(LFT_PATH) -lft $^ -o $@ 
+		@$(CC) -o $(NAME) $^ -o $@ $(LFT_PATH)/libft.a 
 		@echo "$(GRE)ssl_md5 DONE!$(GRE)"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c

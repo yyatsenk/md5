@@ -16,11 +16,71 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-
+#include <stdint.h>
 #include <stddef.h>
+#include <fcntl.h>
 
 #define SHA256_BLOCK_SIZE 32
 
+#define PRINT_HASH(buf)   \
+{\
+    int i = 0;                      \
+    while(i < 32)               \
+    {                           \
+        printf("%2.2x", buf[i]);    \
+        i++;                        \
+    }  \
+}\
+
+#define PRINT_ALGO_STR(algo, str, hash)         \
+if (!ft_strcmp(algo, "SHA256"))                 \
+{                                               \
+    printf("%s (\"%s\") =", algo, str);         \
+    PRINT_HASH(hash);                           \
+    printf("\n");                                \
+}                                               \
+else                                             \
+    printf("%s (\"%s\") = %s\n", algo, str, hash); \
+
+
+
+#define PRINT_ALGO_FILE(algo, filename, hash)         \
+if (!ft_strcmp(algo, "SHA256"))                 \
+{                                               \
+    printf("%s (\"%s\") = ", algo, filename);         \
+    PRINT_HASH(hash);                           \
+    printf("\n");                                \
+}                                               \
+else                                             \
+    printf("%s (%s) = %s\n", algo, filename, hash); \
+
+
+
+#define PRINT_STR_REV(algo, str, hash)         \
+if (!ft_strcmp(algo, "SHA256"))                 \
+{                                                        \
+    PRINT_HASH(hash);                           \
+    printf(" \"%s\"\n", str);                                \
+}                                               \
+else                                             \
+    printf("%s \"%s\"\n", hash, str); \
+
+
+
+
+#define PRINT_FILE_REV(algo, filename, hash)         \
+if (!ft_strcmp(algo, "SHA256"))                 \
+{        \
+    PRINT_HASH(hash);                                                                  \
+    printf(" %s\n", filename); \
+}                                               \
+else                                             \
+    printf("%s %s\n", hash, filename); \
+
+//#define PRINT_ALGO_FILE(algo, filename, hash)   printf("%s (%s) = %s\n", algo, filename, hash)
+//#define PRINT_STR_REV(str, hash)                printf("%s \"%s\"\n", hash, str)
+//#define PRINT_FILE_REV(filename, hash)          printf("%s %s\n", hash, filename)
+                             
 
 typedef unsigned char BYTE;  
 typedef unsigned int  WORD;
@@ -56,6 +116,7 @@ typedef struct  s_flags
     unsigned s;
     char *filename;
     char *str;
+    short algo; // 0 - md5, 1 - sh256
 }               t_flags;
 
 typedef struct  s_abcd
@@ -93,6 +154,7 @@ typedef struct  s_sha256
 	unsigned int datalen;
 	unsigned long long bitlen;
 	unsigned int state[8];
+    t_abcd256 abcd256;
     t_flags flags;
 }               t_sha256;
 

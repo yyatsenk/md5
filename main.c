@@ -11,11 +11,13 @@
 /* ************************************************************************** */
 
 #include "ssl.h"
+//#include <stdint.h>
 
  
 #define LEFTROTATE(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 
-
+typedef unsigned uint32_t;
+typedef unsigned  char uint8_t;
 
 void md5_help_3(t_abcd *abcd, int *f, int *g, int i)
 {
@@ -243,32 +245,165 @@ void sha256_res(t_sha256 *ctx, unsigned char hash[])
 	sha256_res_help(ctx, hash);
 }
 
-int sha256_test()
-{
-	unsigned char text1[] = {"hello/"};
-	unsigned char text2[] = {"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"};
-	unsigned char text3[] = {"aaaaaaaaaa"};
-	unsigned char hash1[SHA256_BLOCK_SIZE] = {0xba,0x78,0x16,0xbf,0x8f,0x01,0xcf,0xea,0x41,0x41,0x40,0xde,0x5d,0xae,0x22,0x23,
-	                                 0xb0,0x03,0x61,0xa3,0x96,0x17,0x7a,0x9c,0xb4,0x10,0xff,0x61,0xf2,0x00,0x15,0xad};
-	unsigned char hash2[SHA256_BLOCK_SIZE] = {0x24,0x8d,0x6a,0x61,0xd2,0x06,0x38,0xb8,0xe5,0xc0,0x26,0x93,0x0c,0x3e,0x60,0x39,
-	                                 0xa3,0x3c,0xe4,0x59,0x64,0xff,0x21,0x67,0xf6,0xec,0xed,0xd4,0x19,0xdb,0x06,0xc1};
-	unsigned char hash3[SHA256_BLOCK_SIZE] = {0xcd,0xc7,0x6e,0x5c,0x99,0x14,0xfb,0x92,0x81,0xa1,0xc7,0xe2,0x84,0xd7,0x3e,0x67,
-	                                 0xf1,0x80,0x9a,0x48,0xa4,0x97,0x20,0x0e,0x04,0x6d,0x39,0xcc,0xc7,0x11,0x2c,0xd0};
-	unsigned char buf[SHA256_BLOCK_SIZE];
-	t_sha256 ctx;
-	int idx;
-	int pass = 1;
+#define B_SIZE 4096
 
-	sha256_create(&ctx);
-	sha256_update(&ctx, text1, strlen(text1));
-	sha256_res(&ctx, buf);
-    uint8_t *p;
-	for(int i = 0; i < 32; i++)
-    {
-        printf("%2.2x", buf[i]);
- 
-    }
-	return(pass);
+unsigned int little_big(unsigned int little)
+{
+    return((little&0xff)<<24)+((little&0xff00)<<8)+((little&0xff0000)>>8)+      \
+                                                             ((little>>24)&0xff);
+}
+
+char *get_str_md5(t_mda5 md5_data)
+{
+	char *input_hash;
+	char *tmp;
+
+	input_hash = NULL;
+	tmp = NULL;
+	input_hash = ft_itoa_base(little_big(md5_data.h0), 16, 0);
+	tmp = input_hash;
+	input_hash = ft_strjoin(input_hash, ft_itoa_base(little_big(md5_data.h1), 16, 0));
+	free(tmp);
+	tmp = input_hash;
+	input_hash = ft_strjoin(input_hash, ft_itoa_base(little_big(md5_data.h2), 16, 0));
+	free(tmp);
+	tmp = input_hash;
+	input_hash = ft_strjoin(input_hash, ft_itoa_base(little_big(md5_data.h3), 16, 0));
+	free(tmp);
+	return (input_hash);
+}
+int do_everything(t_flags flags)
+{
+	t_mda5 md5_data;
+	t_sha256 ctx;
+	char *res;
+	char *buff_input;
+	int i;
+	unsigned char buf[SHA256_BLOCK_SIZE];
+
+	buff_input = NULL;
+	if (flags.algo == 0)
+	{
+		if (flags.filename == NULL && flags.str == NULL || flags.p)
+		{
+			buff_input = ft_strnew(B_SIZE);
+			if ((i = read(0, buff_input, B_SIZE)) < 0)
+				return (-1);
+			buff_input[i] = '\0';
+    		md5(buff_input, i, &md5_data);
+ 			res = get_str_md5(md5_data);
+			if(flags.p)
+				printf("%s", buff_input);
+    		printf("%s\n", res);
+			free(buff_input);
+		}
+		if (flags.str != NULL)
+		{
+			md5(flags.str, ft_strlen(flags.str), &md5_data);
+			res = get_str_md5(md5_data);
+			if (flags.q)
+				printf("%s\n", res);
+			else if (flags.r)
+			{
+				PRINT_STR_REV("MD5", flags.str, res);
+			}
+			else
+				PRINT_ALGO_STR("MD5", flags.str, res);
+		}
+		if (flags.filename != NULL)
+		{
+			int fd;
+
+			fd = open(flags.filename, O_RDONLY);
+			if (fd < 0)
+			{
+				printf("md5: %s: No such file or directory\n", flags.filename);
+				return (-1);
+			}
+			buff_input = ft_strnew(B_SIZE);
+			if ((i = read(fd, buff_input, B_SIZE)) < 0)
+			return (-1);
+			buff_input[i] = '\0';
+    		md5(buff_input, i, &md5_data);
+ 			res = get_str_md5(md5_data);
+			if (flags.q)
+				printf("%s\n", res); 
+			else if (flags.r)
+			{
+    			PRINT_FILE_REV("MD5", flags.filename, res);
+			}
+			else
+				PRINT_ALGO_FILE("MD5", flags.filename, res);
+		}	
+	}
+	if (flags.algo == 1)
+	{
+		if (flags.filename == NULL && flags.str == NULL || flags.p)
+		{
+			buff_input = ft_strnew(B_SIZE);
+			if ((i = read(0, buff_input, B_SIZE)) < 0)
+				return (-1);
+			buff_input[i] = '\0';
+    		sha256_create(&ctx);
+			sha256_update(&ctx, buff_input, strlen(buff_input));
+			sha256_res(&ctx, buf);
+			if(flags.p)
+				printf("%s", buff_input);
+			PRINT_HASH(buf);
+    		printf("\n");
+			free(buff_input);
+		}
+		if (flags.str != NULL)
+		{
+			sha256_create(&ctx);
+			sha256_update(&ctx, flags.str, strlen(flags.str));
+			sha256_res(&ctx, buf);
+			if(flags.q)
+			{
+				PRINT_HASH(buf);
+			}
+			else if (flags.r)
+			{
+				PRINT_STR_REV("SHA256", flags.str, buf);
+			}
+			else
+			{
+				PRINT_ALGO_STR("SHA256", flags.str, buf);
+			}
+		}
+		if (flags.filename != NULL)
+		{
+			int fd;
+
+			fd = open(flags.filename, O_RDONLY);
+			if (fd < 0)
+			{
+				printf("md5: %s: No such file or directory\n", flags.filename);
+				return (-1);
+			}
+			buff_input = ft_strnew(B_SIZE);
+			if ((i = read(fd, buff_input, B_SIZE)) < 0)
+			return (-1);
+			buff_input[i] = '\0';
+    		sha256_create(&ctx);
+			sha256_update(&ctx, buff_input, strlen(buff_input));
+			sha256_res(&ctx, buf);
+			if(flags.q)
+			{
+				PRINT_HASH(buf);
+				printf("\n");
+			}
+			else if (flags.r)
+			{
+    			PRINT_FILE_REV("SHA256", flags.filename, buf);
+			}
+			else
+			{
+				PRINT_ALGO_FILE("SHA256", flags.filename, buf);
+			}
+		}
+	}
+	return (0);
 }
 
 int main(int argv, char **argc)
@@ -279,57 +414,45 @@ int main(int argv, char **argc)
     t_flags flags;
     flags.q = 0;
     flags.p = 0;
-    flags.s = 0;
     flags.r = 0;
+	flags.s = 0;
     flags.str = 0;
     flags.filename = 0;
+	flags.algo = -1;
     int i = 2;
-    if (argv > 8 && argv < 2) {
+    if (argv < 2) {
         printf("usage: %s 'string'\n", argc[0]);
-        return 1;
+        return 0;
     }
+	if (!ft_strcmp(argc[1], "md5"))
+    	flags.algo = 0;
+    else if (!ft_strcmp(argc[1], "sha256"))
+		flags.algo = 1;
+	if (flags.algo == -1)
+		return (0);
     while (i < argv)
     {
     	if (!ft_strcmp(argc[i], "-q"))
     		flags.q = 1;
-    	if (!ft_strcmp(argc[i], "-p"))
+    	else if (!ft_strcmp(argc[i], "-p"))
     		flags.p = 1;
-    	if (!ft_strcmp(argc[i], "-r"))
+    	else if (!ft_strcmp(argc[i], "-r"))
     		flags.r = 1;
-    	if (!ft_strcmp(argc[i], "-s"))
+    	else if (!ft_strcmp(argc[i], "-s"))
     	{
     		flags.s = 1;
-    		flags.str = argc[++i];
+			if (i + 1 != argv)
+    			flags.str = argc[++i];
+			else
+				return (0);
     	}
+		else
+			flags.filename = argc[i];
     	i++;
     }
-    if (!ft_strcmp(argc[1], "md5"))
-    {
-    	md5_data.flags = flags;
-    }
-    else if (!ft_strcmp(argc[1], "sha256"))
-    {
-	}
- 		msg = argc[2];
-    	len = ft_strlen(msg);
-    	md5(msg, len, &md5_data);
-    uint8_t *p;
- 
-    
-    p=(uint8_t *)&md5_data.h0;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], md5_data.h0);
- 
-    p=(uint8_t *)&md5_data.h1;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], md5_data.h1);
- 
-    p=(uint8_t *)&md5_data.h2;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], md5_data.h2);
- 
-    p=(uint8_t *)&md5_data.h3;
-    printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], md5_data.h3);
-    puts("\n");
- 
-	sha256_test();
+	do_everything(flags);
+ 		
+	//sha256_test();
 
 	return(0);
 }

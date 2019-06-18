@@ -35,7 +35,6 @@ char					*ft_itoa_short_u(unsigned short int n)
 	str[--str_len] = tmp_n % 10 + '0';
 	while (tmp_n /= 10)
 		str[--str_len] = tmp_n % 10 + '0';
-	if (n < 0)
-		*(str + 0) = '-';
+	*(str + 0) = '-';
 	return (str);
 }

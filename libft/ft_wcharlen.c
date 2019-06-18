@@ -16,9 +16,7 @@ int	ft_wcharlen(wchar_t wstr)
 {
 	int size;
 	int res;
-	int i;
 
-	i = -1;
 	size = 0;
 	res = 0;
 	size = ft_size_bin(wstr);
