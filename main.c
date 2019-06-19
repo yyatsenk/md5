@@ -30,7 +30,7 @@ void print_algo_str(char *algo, char *str, char *hash)
 {
 	if (!ft_strcmp(algo, "SHA256"))
 	{
-		printf("%s (\"%s\") =", algo, str);
+		printf("%s (\"%s\") = ", algo, str);
 		print_hash(hash);
 		printf("\n");
 	}
@@ -42,7 +42,7 @@ void print_algo_file(char *algo, char *str, char *hash)
 {
 	if (!ft_strcmp(algo, "SHA256"))
 	{
-		printf("%s (%s) =", algo, str);
+		printf("%s (%s) = ", algo, str);
 		print_hash(hash);
 		printf("\n");
 	}
@@ -79,55 +79,58 @@ typedef unsigned  char uint8_t;
 
 void md5_help_3(t_abcd *abcd, int *f, int *g, int i)
 {
-			if (i < 16)
-			{
-				*f = (abcd->b & abcd->c) | ((~abcd->b) & abcd->d);
-				*g = i;
-			}
-			else if (i < 32)
-			{
-				*f = (abcd->d & abcd->b) | ((~abcd->d) & abcd->c);
-				*g = (5*i + 1) % 16;
-			}
-			else if (i < 48)
-			{
-				*f = abcd->b ^ abcd->c ^ abcd->d;
-				*g = (3*i + 5) % 16;          
-			}
-			else 
-			{
-				*f = abcd->c ^ (abcd->b | (~abcd->d));
-				*g = (7*i) % 16;
-			}
-
+	if (i < 16)
+	{
+		*f = (abcd->b & abcd->c) | ((~abcd->b) & abcd->d);
+		*g = i;
+	}
+	else if (i < 32)
+	{
+		*f = (abcd->d & abcd->b) | ((~abcd->d) & abcd->c);
+		*g = (5*i + 1) % 16;
+	}
+	else if (i < 48)
+	{
+		*f = abcd->b ^ abcd->c ^ abcd->d;
+		*g = (3*i + 5) % 16;          
+	}
+	else 
+	{
+		*f = abcd->c ^ (abcd->b | (~abcd->d));
+		*g = (7*i) % 16;
+	}
 }
 
 void md5_help_2(t_abcd *abcd, uint32_t *w) 
 {
 	uint8_t *p;
 	uint32_t temp;
-	for(int i = 0; i<64; i++) {
+	int i;
 
-			p=(uint8_t *)&abcd->a;
-			p=(uint8_t *)&abcd->b;
-			p=(uint8_t *)&abcd->c;
-			p=(uint8_t *)&abcd->d;
-			uint32_t f;
-			uint32_t g;
-
-			md5_help_3(abcd, &f, &g, i);
-			temp = abcd->d;
-			abcd->d = abcd->c;
-			abcd->c = abcd->b;
-			abcd->b = abcd->b + LEFTROTATE((abcd->a + f + k5[i] + w[g]), r5[i]);
-			abcd->a = temp;
-		}
+	i = -1;
+	while (++i<64)
+	{
+		p=(uint8_t *)&abcd->a;
+		p=(uint8_t *)&abcd->b;
+		p=(uint8_t *)&abcd->c;
+		p=(uint8_t *)&abcd->d;
+		uint32_t f;
+		uint32_t g;
+		md5_help_3(abcd, &f, &g, i);
+		temp = abcd->d;
+		abcd->d = abcd->c;
+		abcd->c = abcd->b;
+		abcd->b = abcd->b + LEFTROTATE((abcd->a + f + k5[i] + w[g]), r5[i]);
+		abcd->a = temp;
+	}
 }
 
 void md5_help(t_mda5 *md5, int new_len, uint8_t *msg) 
 {
 	int offset;
-	for(offset=0; offset<new_len; offset += (512/8))
+
+	offset = 0;
+	while (offset < new_len)
 	{
 		uint32_t *w = (uint32_t *) (msg + offset);
 		int j;
@@ -142,12 +145,12 @@ void md5_help(t_mda5 *md5, int new_len, uint8_t *msg)
 		md5->h1 += abcd.b;
 		md5->h2 += abcd.c;
 		md5->h3 += abcd.d;
+		offset += (512/8);
 	}
 }
  
 void md5(uint8_t *initial_msg, size_t initial_len, t_mda5 *md5)
 {
- 
 	uint8_t *msg;
 	int new_len;
 	uint32_t bits_len;
@@ -183,6 +186,18 @@ static const unsigned int k[64] = {
 	0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
 };
 
+void sha256_transform_help_3(t_sha256 *ctx, t_abcd256 abcd256)
+{
+	ctx->state[0] += abcd256.a;
+	ctx->state[1] += abcd256.b;
+	ctx->state[2] += abcd256.c;
+	ctx->state[3] += abcd256.d;
+	ctx->state[4] += abcd256.e;
+	ctx->state[5] += abcd256.f;
+	ctx->state[6] += abcd256.g;
+	ctx->state[7] += abcd256.h;
+}
+
 void sha256_transform_help(t_sha256 *ctx, const unsigned char data[], t_abcd256 abcd256, unsigned int m[64])
 {
 	unsigned int t1;
@@ -203,14 +218,7 @@ void sha256_transform_help(t_sha256 *ctx, const unsigned char data[], t_abcd256 
 		abcd256.b = abcd256.a;
 		abcd256.a = t1 + t2;
 	}
-	ctx->state[0] += abcd256.a;
-	ctx->state[1] += abcd256.b;
-	ctx->state[2] += abcd256.c;
-	ctx->state[3] += abcd256.d;
-	ctx->state[4] += abcd256.e;
-	ctx->state[5] += abcd256.f;
-	ctx->state[6] += abcd256.g;
-	ctx->state[7] += abcd256.h;
+	sha256_transform_help_3(ctx, abcd256);
 }
 
 void sha256_transform_help_2(unsigned int *m, const unsigned char data[])
@@ -360,130 +368,176 @@ char *get_str_md5(t_mda5 md5_data)
 	free(tmp);
 	return (input_hash);
 }
-int do_everything(t_flags flags)
+
+void do_md5_str(t_flags flags, char *buff_input, t_mda5 md5_data)
 {
-	t_mda5 md5_data;
-	t_sha256 ctx;
+	char *res;
+
+	if (flags.str != NULL)
+	{
+		md5(flags.str, ft_strlen(flags.str), &md5_data);
+		res = get_str_md5(md5_data);
+		if (flags.q)
+			printf("%s\n", res);
+		else if (flags.r)
+			print_str_rev("MD5", flags.str, res);
+		else
+			print_algo_str("MD5", flags.str, res);
+	}
+}
+
+void do_md5_file_help(t_flags flags, char *res)
+{
+	if (flags.q)
+		printf("%s\n", res); 
+	else if (flags.r)
+		print_file_rev("MD5", flags.filename[0], res);
+	else
+		print_algo_file("MD5", flags.filename[0], res);
+}
+
+int do_md5_file(t_flags flags, char *buff_input, t_mda5 md5_data, int i)
+{
+	char *res;
+	int fd;
+
+	while (flags.filename[0] != NULL)
+	{
+		fd = open(flags.filename[0], O_RDONLY);
+		if (fd < 0)
+		{
+			printf("md5: %s: No such file or directory\n", flags.filename[0]);
+			return (-1);
+		}
+		buff_input = ft_strnew(B_SIZE);
+		if ((i = read(fd, buff_input, B_SIZE)) < 0)
+		{
+			printf("md5: %s: Bad file passed\n", flags.filename[0]);
+			return (-1);
+		}
+		buff_input[i] = '\0';
+		md5(buff_input, i, &md5_data);
+		res = get_str_md5(md5_data);
+		do_md5_file_help(flags, res);
+		flags.filename++;
+	}
+}
+
+int do_md5(t_flags flags)
+{
 	char *res;
 	char *buff_input;
+	t_mda5 md5_data;
 	int i;
-	int j;
+
+	buff_input = NULL;
+	if (flags.filename == NULL && flags.str == NULL || flags.p)
+	{
+		buff_input = ft_strnew(B_SIZE);
+		if ((i = read(0, buff_input, B_SIZE)) < 0)
+			return (-1);
+		buff_input[i] = '\0';
+		md5(buff_input, i, &md5_data);
+		res = get_str_md5(md5_data);
+		if(flags.p)
+			printf("%s", buff_input);
+		printf("%s\n", res);
+		free(buff_input);
+	}
+	do_md5_str(flags, buff_input, md5_data);
+	if(flags.filename != NULL)
+		do_md5_file(flags, buff_input, md5_data, i);
+}
+
+int do_sha256_str(t_flags flags, t_sha256 ctx, unsigned char *buf)
+{
+	if (flags.str != NULL)
+	{
+		sha256_create(&ctx);
+		sha256_update(&ctx, flags.str, strlen(flags.str));
+		sha256_res(&ctx, buf);
+		if(flags.q)
+			print_hash(buf);
+		else if (flags.r)
+			print_str_rev("SHA256", flags.str, buf);
+		else
+			print_algo_str("SHA256", flags.str, buf);
+	}
+}
+
+void do_sha256_file_help(t_flags flags, unsigned char *buf)
+{
+	if(flags.q)
+	{
+		print_hash(buf);
+		printf("\n");
+	}
+	else if (flags.r)
+		print_file_rev("SHA256", flags.filename[0], buf);
+	else
+		print_algo_file("SHA256", flags.filename[0], buf);
+}
+
+void do_sha256_file(t_flags flags, t_sha256 ctx, unsigned char *buf, char *buff_input)
+{
+	int fd;
+	int i;
+
+	while (flags.filename[0] != NULL)
+	{
+		fd = open(flags.filename[0], O_RDONLY);
+		if (fd < 0)
+		{
+			printf("md5: %s: No such file or directory\n", flags.filename[0]);
+			return;
+		}
+		buff_input = ft_strnew(B_SIZE);
+		if ((i = read(fd, buff_input, B_SIZE)) < 0)
+			return;
+		buff_input[i] = '\0';
+		sha256_create(&ctx);
+		sha256_update(&ctx, buff_input, strlen(buff_input));
+		sha256_res(&ctx, buf);
+		do_sha256_file_help(flags, buf);
+		flags.filename++;
+	}
+}
+
+int do_sha256(t_flags flags)
+{
+	t_sha256 ctx;
+	char *buff_input;
+	int i;
 	unsigned char buf[SHA256_BLOCK_SIZE];
 
 	buff_input = NULL;
-	j = 0;
-	if (flags.algo == 0)
+	if (flags.filename == NULL && flags.str == NULL || flags.p)
 	{
-		if (flags.filename == NULL && flags.str == NULL || flags.p)
-		{
-			buff_input = ft_strnew(B_SIZE);
-			if ((i = read(0, buff_input, B_SIZE)) < 0)
-				return (-1);
-			buff_input[i] = '\0';
-			md5(buff_input, i, &md5_data);
-			res = get_str_md5(md5_data);
-			if(flags.p)
-				printf("%s", buff_input);
-			printf("%s\n", res);
-			free(buff_input);
-		}
-		if (flags.str != NULL)
-		{
-			md5(flags.str, ft_strlen(flags.str), &md5_data);
-			res = get_str_md5(md5_data);
-			if (flags.q)
-				printf("%s\n", res);
-			else if (flags.r)
-				print_str_rev("MD5", flags.str, res);
-			else
-				print_algo_str("MD5", flags.str, res);
-		}
-		while (flags.filename[0] != NULL)
-		{
-			int fd;
-
-			fd = open(flags.filename[j], O_RDONLY);
-			if (fd < 0)
-			{
-				printf("md5: %s: No such file or directory\n", flags.filename[j]);
-				return (-1);
-			}
-			buff_input = ft_strnew(B_SIZE);
-			if ((i = read(fd, buff_input, B_SIZE)) < 0)
-			{
-				printf("md5: %s: Bad file passed\n", flags.filename[j]);
-				return (-1);
-			}
-			buff_input[i] = '\0';
-			md5(buff_input, i, &md5_data);
-			res = get_str_md5(md5_data);
-			if (flags.q)
-				printf("%s\n", res); 
-			else if (flags.r)
-				print_file_rev("MD5", flags.filename[j], res);
-			else
-				print_algo_file("MD5", flags.filename[j], res);
-			flags.filename++;
-		}	
-	}
-	if (flags.algo == 1)
-	{
-		if (flags.filename == NULL && flags.str == NULL || flags.p)
-		{
-			buff_input = ft_strnew(B_SIZE);
-			if ((i = read(0, buff_input, B_SIZE)) < 0)
-				return (-1);
-			buff_input[i] = '\0';
-			sha256_create(&ctx);
-			sha256_update(&ctx, buff_input, strlen(buff_input));
-			sha256_res(&ctx, buf);
-			if(flags.p)
-				printf("%s", buff_input);
-			print_hash(buf);
-			printf("\n");
-			free(buff_input);
-		}
-		if (flags.str != NULL)
-		{
-			sha256_create(&ctx);
-			sha256_update(&ctx, flags.str, strlen(flags.str));
-			sha256_res(&ctx, buf);
-			if(flags.q)
-				print_hash(buf);
-			else if (flags.r)
-				print_str_rev("SHA256", flags.str, buf);
-			else
-				print_algo_str("SHA256", flags.str, buf);
-		}
-		while (flags.filename[0] != NULL)
-		{
-			int fd;
-
-			fd = open(flags.filename[j], O_RDONLY);
-			if (fd < 0)
-			{
-				printf("md5: %s: No such file or directory\n", flags.filename[0]);
-				return (-1);
-			}
-			buff_input = ft_strnew(B_SIZE);
-			if ((i = read(fd, buff_input, B_SIZE)) < 0)
+		buff_input = ft_strnew(B_SIZE);
+		if ((i = read(0, buff_input, B_SIZE)) < 0)
 			return (-1);
-			buff_input[i] = '\0';
-			sha256_create(&ctx);
-			sha256_update(&ctx, buff_input, strlen(buff_input));
-			sha256_res(&ctx, buf);
-			if(flags.q)
-			{
-				print_hash(buf);
-				printf("\n");
-			}
-			else if (flags.r)
-				print_file_rev("SHA256", flags.filename[0], buf);
-			else
-				print_algo_file("SHA256", flags.filename[0], buf);
-			flags.filename++;
-		}
+		buff_input[i] = '\0';
+		sha256_create(&ctx);
+		sha256_update(&ctx, buff_input, strlen(buff_input));
+		sha256_res(&ctx, buf);
+		if(flags.p)
+			printf("%s", buff_input);
+		print_hash(buf);
+		printf("\n");
+		free(buff_input);
 	}
+	do_sha256_str(flags, ctx, buf);
+	if (flags.filename != NULL)
+		do_sha256_file(flags, ctx, buf, buff_input);
+	return (0);
+}
+
+int do_everything(t_flags flags)
+{
+	if (flags.algo == 0)
+		do_md5(flags);
+	else if (flags.algo == 1)
+		do_sha256(flags);
 	return (0);
 }
 
@@ -514,7 +568,7 @@ int parse_param(t_flags *flags, int argv, char **argc)
 			flags->r = 1;
 		else if (!ft_strcmp(argc[i], "-s"))
 		{
-			if ((flags->s = 1) &&i + 1 != argv)
+			if ((flags->s = 1) && i + 1 != argv)
 				flags->str = argc[++i];
 			else
 				return (0);
