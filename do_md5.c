@@ -46,9 +46,9 @@ static void	do_md5_str(t_flags flags, t_mda5 md5_data)
 		if (flags.q)
 			printf("%s\n", res);
 		else if (flags.r)
-			print_str_rev("MD5", flags.str, res);
+			print_str_rev("MD5", flags.str, (unsigned char *)res);
 		else
-			print_algo_str("MD5", flags.str, res);
+			print_algo_str("MD5", flags.str, (unsigned char *)res);
 	}
 }
 
@@ -57,9 +57,9 @@ static void	do_md5_file_help(t_flags flags, char *res)
 	if (flags.q)
 		printf("%s\n", res); 
 	else if (flags.r)
-		print_file_rev("MD5", flags.filename[0], res);
+		print_file_rev("MD5", flags.filename[0], (unsigned char *)res);
 	else
-		print_algo_file("MD5", flags.filename[0], res);
+		print_algo_file("MD5", flags.filename[0], (unsigned char *)res);
 }
 
 static void	do_md5_file(t_flags flags, char *buff_input, t_mda5 md5_data, int i)
