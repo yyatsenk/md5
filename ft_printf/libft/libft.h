@@ -17,7 +17,7 @@
 # include <stdarg.h>
 # include <string.h>
 # include <stdlib.h>
-# include "get_next_line.h"
+# include "../ft_printf.h"
 # include "./libft.h"
 # include <limits.h>
 # include <wchar.h>
@@ -171,7 +171,7 @@ int					num_maintain(char *format_line, va_list *ap, t_typer *type,\
 char				*precision_num(char *format_line, char *str,\
 	t_typer type, int *nil);
 int					mod_norm_help(char *format, char **str, t_typer type,\
-	int num);
+	intmax_t num);
 char				*width_num(char *format_line, char *str,\
 	char c, t_typer type);
 char				*ft_white_swap_num(char *str, int space);

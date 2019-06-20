@@ -12,7 +12,8 @@
 
 #include "ssl.h"
 
-void				sha256_update(t_sha256 *ctx, unsigned char data[], size_t len)
+void				sha256_update(t_sha256 *ctx,\
+unsigned char data[], size_t len)
 {
 	unsigned int	i;
 
@@ -55,7 +56,7 @@ static void			sha256_res_help(t_sha256 *ctx, unsigned char hash[])
 	ctx->data[57] = ctx->bitlen >> 48;
 	ctx->data[56] = ctx->bitlen >> 56;
 	sha256_transform(ctx, ctx->data);
-	while(++i < 4)
+	while (++i < 4)
 	{
 		hash[i] = (ctx->state[0] >> (24 - i * 8)) & 0x000000ff;
 		hash[i + 4] = (ctx->state[1] >> (24 - i * 8)) & 0x000000ff;

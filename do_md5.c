@@ -44,7 +44,7 @@ static void	do_md5_str(t_flags flags, t_mda5 md5_data)
 		md5((uint8_t *)flags.str, ft_strlen(flags.str), &md5_data);
 		res = get_str_md5(md5_data);
 		if (flags.q)
-			printf("%s\n", res);
+			ft_printf("%s\n", res);
 		else if (flags.r)
 			print_str_rev("MD5", flags.str, (unsigned char *)res);
 		else
@@ -55,7 +55,7 @@ static void	do_md5_str(t_flags flags, t_mda5 md5_data)
 static void	do_md5_file_help(t_flags flags, char *res)
 {
 	if (flags.q)
-		printf("%s\n", res); 
+		ft_printf("%s\n", res);
 	else if (flags.r)
 		print_file_rev("MD5", flags.filename[0], (unsigned char *)res);
 	else
@@ -72,13 +72,13 @@ static void	do_md5_file(t_flags flags, char *buff_input, t_mda5 md5_data, int i)
 		fd = open(flags.filename[0], O_RDONLY);
 		if (fd < 0)
 		{
-			printf("md5: %s: No such file or directory\n", flags.filename[0]);
+			ft_printf("md5: %s: No such file or directory\n", flags.filename[0]);
 			return ;
 		}
 		buff_input = ft_strnew(B_SIZE);
 		if ((i = read(fd, buff_input, B_SIZE)) < 0)
 		{
-			printf("md5: %s: Bad file passed\n", flags.filename[0]);
+			ft_printf("md5: %s: Bad file passed\n", flags.filename[0]);
 			return ;
 		}
 		buff_input[i] = '\0';
@@ -97,6 +97,7 @@ int			do_md5(t_flags flags)
 	int		i;
 
 	buff_input = NULL;
+	md5_data.h0 = 0;
 	if ((!flags.filename && !flags.str) || flags.p)
 	{
 		buff_input = ft_strnew(B_SIZE);
@@ -105,13 +106,13 @@ int			do_md5(t_flags flags)
 		buff_input[i] = '\0';
 		md5((uint8_t *)buff_input, i, &md5_data);
 		res = get_str_md5(md5_data);
-		if(flags.p)
-			printf("%s", buff_input);
-		printf("%s\n", res);
+		if (flags.p)
+			ft_printf("%s", buff_input);
+		ft_printf("%s\n", res);
 		free(buff_input);
 	}
 	do_md5_str(flags, md5_data);
-	if(flags.filename != NULL)
+	if (flags.filename != NULL)
 		do_md5_file(flags, buff_input, md5_data, i);
 	return (0);
 }

@@ -10,31 +10,46 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include "./ft_printf.h"
+#include "libft/libft.h"
+#include <limits.h>
+#include <wchar.h>
 
-static size_t			string_length(unsigned short int n)
+static int		proc_finder(char **format)
 {
-	size_t				i;
+	int			count;
 
-	i = 1;
-	while (n /= 10)
-		i++;
-	return (i);
+	count = 0;
+	while (**format != '%' && **format)
+	{
+		write(1, &**format, 1);
+		*format = *format + 1;
+		count++;
+	}
+	return (count);
 }
 
-char					*ft_itoa_short_u(unsigned short int n)
+int				ft_printf(char *format, ...)
 {
-	size_t				str_len;
-	unsigned short int	tmp_n;
-	char				*str;
+	t_perech	data;
+	t_typer		type;
+	int			retur;
+	va_list		ap;
 
-	str_len = string_length(n);
-	tmp_n = n;
-	if (!(str = ft_strnew(str_len)))
-		return (0);
-	str[--str_len] = tmp_n % 10 + '0';
-	while (tmp_n /= 10)
-		str[--str_len] = tmp_n % 10 + '0';
-	*(str + 0) = '-';
-	return (str);
+	retur = 0;
+	va_start(ap, format);
+	while (*format)
+	{
+		data = no;
+		type = none;
+		retur += proc_finder(&format);
+		if (*format == '\0')
+			return (retur);
+		retur += way_definder(format_cat(&format), &ap, &type, &data);
+	}
+	va_end(ap);
+	return (retur);
 }

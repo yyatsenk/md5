@@ -22,7 +22,8 @@ cc = gcc
 C_FLAGS =  -Wall -Wextra -Werror 
 
 OBJ_PATH = ./obj/
-LFT_PATH = ./libft/
+PRINTF_PATH = ./ft_printf
+LFT_PATH = ./ft_printf/libft/
 INC_PATH = .
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
@@ -36,7 +37,8 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 		@make -C $(LFT_PATH)
-		@$(CC) -o $(NAME) $^ -o $@ $(LFT_PATH)/libft.a 
+		@make -C $(PRINTF_PATH)
+		@$(CC) -o $(NAME) $^ -o $@ $(LFT_PATH)/libft.a $(PRINTF_PATH)/libftprintf.a
 		@echo "$(GRE)ft_ssl DONE!$(GRE)"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -45,11 +47,13 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 
 clean:
 		@make -C $(LFT_PATH) clean
+		@make -C $(PRINTF_PATH) clean
 		@rm -rf $(OBJ_PATH)
 		@echo "$(RED)Removing OBJ path: ./obj$(RED)"
 
 fclean: clean
 		@make -C $(LFT_PATH) fclean
+		@make -C $(PRINTF_PATH) fclean
 		@rm -f $(NAME)
 		@echo "$(RED)Removing ft_ssl executables$(RED)"
 

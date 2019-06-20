@@ -62,7 +62,7 @@ static int		parse_param(t_flags *flags, int argv, char **argc)
 		else
 		{
 			flags->filename = &argc[i];
-			break;
+			break ;
 		}
 	return (1);
 }
@@ -71,9 +71,10 @@ int				main(int argv, char **argc)
 {
 	t_flags		flags;
 
-	if (argv < 2) {
-		printf("usage: %s [-s]'string' [-q][-p][-r] filename\n", argc[0]);
-		return 0;
+	if (argv < 2)
+	{
+		ft_printf("usage: %s [-s]'string' [-q][-p][-r] filename\n", argc[0]);
+		return (0);
 	}
 	construct_flags(&flags);
 	if (!ft_strcmp(argc[1], "md5"))
@@ -82,9 +83,9 @@ int				main(int argv, char **argc)
 		flags.algo = 1;
 	if (!parse_param(&flags, argv, argc))
 	{
-		printf("usage: %s [-s]'string' [-q][-p][-r] filename\n", argc[0]);
-		return 0;
+		ft_printf("usage: %s [-s]'string' [-q][-p][-r] filename\n", argc[0]);
+		return (0);
 	}
 	do_everything(flags);
-	return(0);
+	return (0);
 }

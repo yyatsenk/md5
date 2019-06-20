@@ -1,32 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   strlen.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yyatsenk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/05 12:03:12 by yyatsenk          #+#    #+#             */
-/*   Updated: 2017/12/05 12:03:13 by yyatsenk         ###   ########.fr       */
+/*   Created: 2017/10/27 10:04:57 by yyatsenk          #+#    #+#             */
+/*   Updated: 2017/10/27 10:13:09 by yyatsenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdlib.h>
-# include "libft.h"
-# include "get_next_line.h"
-
-# define BUFF_SIZE 32
-
-typedef struct			s_deskriptor
+int	ft_wcharlen(wchar_t wstr)
 {
-	char				*res;
-	int					fdc;
-	struct s_deskriptor	*next;
-	struct s_deskriptor	*begin;
-}						t_deskriptor;
-int						get_next_line(const int fd, char **line);
+	int size;
+	int res;
+	int i;
 
-#endif
+	i = -1;
+	size = 0;
+	res = 0;
+	size = ft_size_bin(wstr);
+	if (size <= 7)
+		res += 1;
+	else if (size <= 11)
+		res += 2;
+	else if (size <= 16)
+		res += 3;
+	else
+		res += 4;
+	return (res);
+}

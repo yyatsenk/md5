@@ -12,16 +12,17 @@
 
 #include "ssl.h"
 
-static void			do_sha256_str(t_flags flags, t_sha256 ctx, unsigned char *buf)
+static void			do_sha256_str(t_flags flags, t_sha256 ctx,\
+unsigned char *buf)
 {
 	if (flags.str != NULL)
 	{
 		sha256_update(&ctx, (unsigned char *)flags.str, strlen(flags.str));
 		sha256_res(&ctx, buf);
-		if(flags.q)
+		if (flags.q)
 		{
 			print_hash(buf);
-			printf("\n");
+			ft_printf("\n");
 		}
 		else if (flags.r)
 			print_str_rev("SHA256", flags.str, buf);
@@ -30,12 +31,12 @@ static void			do_sha256_str(t_flags flags, t_sha256 ctx, unsigned char *buf)
 	}
 }
 
-static void 		do_sha256_file_help(t_flags flags, unsigned char *buf)
+static void			do_sha256_file_help(t_flags flags, unsigned char *buf)
 {
-	if(flags.q)
+	if (flags.q)
 	{
 		print_hash(buf);
-		printf("\n");
+		ft_printf("\n");
 	}
 	else if (flags.r)
 		print_file_rev("SHA256", flags.filename[0], buf);
@@ -43,7 +44,8 @@ static void 		do_sha256_file_help(t_flags flags, unsigned char *buf)
 		print_algo_file("SHA256", flags.filename[0], buf);
 }
 
-static void			do_sha256_file(t_flags flags, t_sha256 ctx, unsigned char *buf, char *buff_input)
+static void			do_sha256_file(t_flags flags, t_sha256 ctx,\
+unsigned char *buf, char *buff_input)
 {
 	int				fd;
 	int				i;
@@ -53,12 +55,12 @@ static void			do_sha256_file(t_flags flags, t_sha256 ctx, unsigned char *buf, ch
 		fd = open(flags.filename[0], O_RDONLY);
 		if (fd < 0)
 		{
-			printf("md5: %s: No such file or directory\n", flags.filename[0]);
-			return;
+			ft_printf("md5: %s: No such file or directory\n", flags.filename[0]);
+			return ;
 		}
 		buff_input = ft_strnew(B_SIZE);
 		if ((i = read(fd, buff_input, B_SIZE)) < 0)
-			return;
+			return ;
 		buff_input[i] = '\0';
 		sha256_update(&ctx, (unsigned char *)buff_input, strlen(buff_input));
 		sha256_res(&ctx, buf);
@@ -75,6 +77,7 @@ int					do_sha256(t_flags flags)
 	unsigned char	buf[SHA256_BLOCK_SIZE];
 
 	buff_input = NULL;
+	ctx.bitlen = 0;
 	if ((!flags.filename && !flags.str) || flags.p)
 	{
 		buff_input = ft_strnew(B_SIZE);
@@ -83,10 +86,10 @@ int					do_sha256(t_flags flags)
 		buff_input[i] = '\0';
 		sha256_update(&ctx, (unsigned char *)buff_input, strlen(buff_input));
 		sha256_res(&ctx, buf);
-		if(flags.p)
-			printf("%s", buff_input);
+		if (flags.p)
+			ft_printf("%s", buff_input);
 		print_hash(buf);
-		printf("\n");
+		ft_printf("\n");
 		free(buff_input);
 	}
 	do_sha256_str(flags, ctx, buf);

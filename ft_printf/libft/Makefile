@@ -29,11 +29,11 @@ SRC = ft_atoi.c ft_bzero.c ft_isalnum.c ft_isalpha.c ft_isascii.c \
 					ft_itoa_base_l_l.c ft_itoa_base_u_l_l.c ft_itoa_base_ssize.c \
 					ft_itoa_ssize.c ft_itoa_short.c ft_itoa_short_u.c ft_itoa_base_u_short.c\
 					ft_putstr_null.c ft_wstrjoin.c ft_wstrnew.c ft_wstrncpy.c ft_white_swap_wstr.c\
-					ft_wstrlen.c ft_itoa_base_size.c ft_wcharlen.c get_next_line.c
+					ft_wstrlen.c ft_itoa_base_size.c ft_wcharlen.c 
 					
 LIB_NAME = libft.h
 OBJ = ./*.o
-FLAG = -c -Wall -Wextra -Werror -c
+FLAG = -Wall -Wextra -Werror -c
 
 all:$(NAME)
 
