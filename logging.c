@@ -12,7 +12,7 @@
 
 #include "ssl.h"
 
-void	print_hash(char *buf)
+void	print_hash(unsigned char *buf)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ void	print_hash(char *buf)
 	}
 }
 
-void	print_algo_str(char *algo, char *str, char *hash)
+void	print_algo_str(char *algo, char *str, unsigned char *hash)
 {
 	if (!ft_strcmp(algo, "SHA256"))
 	{
@@ -36,7 +36,7 @@ void	print_algo_str(char *algo, char *str, char *hash)
 		printf("%s (\"%s\") = %s\n", algo, str, hash);
 }
 
-void	print_algo_file(char *algo, char *str, char *hash)
+void	print_algo_file(char *algo, char *str, unsigned char *hash)
 {
 	if (!ft_strcmp(algo, "SHA256"))
 	{
@@ -48,7 +48,7 @@ void	print_algo_file(char *algo, char *str, char *hash)
 		printf("%s (%s) = %s\n", algo, str, hash);
 }
 
-void	print_str_rev(char *algo, char *str, char *hash)
+void	print_str_rev(char *algo, char *str, unsigned char *hash)
 {
 	if (!ft_strcmp(algo, "SHA256"))
 	{
@@ -59,7 +59,7 @@ void	print_str_rev(char *algo, char *str, char *hash)
 		printf("%s \"%s\"\n", hash, str);
 }
 
-void	print_file_rev(char *algo, char *str, char *hash)
+void	print_file_rev(char *algo, char *str, unsigned char *hash)
 {
 	if (!ft_strcmp(algo, "SHA256"))
 	{

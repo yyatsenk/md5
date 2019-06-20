@@ -84,13 +84,13 @@ typedef struct			s_sha256
 # define SIG0(x) (ROT_RIGHT(x,7) ^ ROT_RIGHT(x,18) ^ ((x) >> 3))
 # define SIG1(x) (ROT_RIGHT(x,17) ^ ROT_RIGHT(x,19) ^ ((x) >> 10))
 
-void					print_hash(char *buf);
-void					print_algo_str(char *algo, char *str, char *hash);
-void					print_algo_file(char *algo, char *str, char *hash);
-void					print_str_rev(char *algo, char *str, char *hash);
-void					print_file_rev(char *algo, char *str, char *hash);
+void					print_hash(unsigned char *buf);
+void					print_algo_str(char *algo, char *str, unsigned char *hash);
+void					print_algo_file(char *algo, char *str, unsigned char *hash);
+void					print_str_rev(char *algo, char *str, unsigned char *hash);
+void					print_file_rev(char *algo, char *str, unsigned char *hash);
 void					md5(uint8_t *initial_msg, size_t initial_len, t_mda5 *md5);
-void					sha256_update(t_sha256 *ctx, char data[], size_t len);
+void					sha256_update(t_sha256 *ctx, unsigned char data[], size_t len);
 void					sha256_res(t_sha256 *ctx, unsigned char hash[]);
 void					sha256_transform(t_sha256 *ctx, const unsigned char data[]);
 int						do_md5(t_flags flags);

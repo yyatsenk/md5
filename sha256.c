@@ -12,9 +12,9 @@
 
 #include "ssl.h"
 
-void sha256_update(t_sha256 *ctx, char data[], size_t len)
+void				sha256_update(t_sha256 *ctx, unsigned char data[], size_t len)
 {
-	unsigned int i;
+	unsigned int	i;
 
 	ctx->datalen = 0;
 	ctx->bitlen = 0;
@@ -40,9 +40,9 @@ void sha256_update(t_sha256 *ctx, char data[], size_t len)
 	}
 }
 
-static void sha256_res_help(t_sha256 *ctx, unsigned char hash[])
+static void			sha256_res_help(t_sha256 *ctx, unsigned char hash[])
 {
-	int i;
+	int				i;
 
 	i = -1;
 	ctx->bitlen += ctx->datalen * 8;
@@ -68,9 +68,9 @@ static void sha256_res_help(t_sha256 *ctx, unsigned char hash[])
 	}
 }
 
-void sha256_res(t_sha256 *ctx, unsigned char hash[])
+void				sha256_res(t_sha256 *ctx, unsigned char hash[])
 {
-	unsigned int i;
+	unsigned int	i;
 
 	i = ctx->datalen;
 	if (ctx->datalen < 56)

@@ -35,7 +35,7 @@ static void			sha256_transform_help_3(t_sha256 *ctx, t_abcd256 abcd256)
 	ctx->state[7] += abcd256.h;
 }
 
-static void			sha256_transform_help(t_sha256 *ctx, const unsigned char data[], t_abcd256 abcd256, unsigned int m[64])
+static void			sha256_transform_help(t_sha256 *ctx, t_abcd256 abcd256, unsigned int m[64])
 {
 	unsigned int	t1;
 	unsigned int	t2;
@@ -93,5 +93,5 @@ void				sha256_transform(t_sha256 *ctx, const unsigned char data[])
 	abcd256.f = ctx->state[5];
 	abcd256.g = ctx->state[6];
 	abcd256.h = ctx->state[7];
-	sha256_transform_help(ctx, data, abcd256, m);
+	sha256_transform_help(ctx, abcd256, m);
 }
