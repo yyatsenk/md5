@@ -55,7 +55,8 @@ unsigned char *buf, char *buff_input)
 		fd = open(flags.filename[0], O_RDONLY);
 		if (fd < 0)
 		{
-			ft_printf("md5: %s: No such file or directory\n", flags.filename[0]);
+			ft_printf("md5: %s: No such file or directory\n",\
+				flags.filename[0]);
 			return ;
 		}
 		buff_input = ft_strnew(B_SIZE);

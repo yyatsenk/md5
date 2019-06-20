@@ -72,7 +72,8 @@ static void	do_md5_file(t_flags flags, char *buff_input, t_mda5 md5_data, int i)
 		fd = open(flags.filename[0], O_RDONLY);
 		if (fd < 0)
 		{
-			ft_printf("md5: %s: No such file or directory\n", flags.filename[0]);
+			ft_printf("md5: %s: No such file or directory\n",\
+				flags.filename[0]);
 			return ;
 		}
 		buff_input = ft_strnew(B_SIZE);
