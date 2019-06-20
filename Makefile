@@ -19,7 +19,7 @@ RED=\033[31m
 YELL=\033[33m
 
 cc = gcc
-C_FLAGS = -g# -Wall -Wextra -Werror 
+C_FLAGS =  -Wall -Wextra -Werror 
 
 OBJ_PATH = ./obj/
 LFT_PATH = ./libft/
@@ -27,7 +27,7 @@ INC_PATH = .
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 INC_NAME = ssl.h
-SRC_NAME = main.c
+SRC_NAME = main.c logging.c md5.c sha256.c sha256_transform.c do_md5.c do_sha256.c
 SRC = $(addprefix ,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
 INC = $(addprefix -I,$(INC_PATH))
@@ -37,7 +37,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 		@make -C $(LFT_PATH)
 		@$(CC) -o $(NAME) $^ -o $@ $(LFT_PATH)/libft.a 
-		@echo "$(GRE)ssl_md5 DONE!$(GRE)"
+		@echo "$(GRE)ft_ssl DONE!$(GRE)"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 		@mkdir -p $(OBJ_PATH) 2> /dev/null || true
@@ -51,6 +51,6 @@ clean:
 fclean: clean
 		@make -C $(LFT_PATH) fclean
 		@rm -f $(NAME)
-		@echo "$(RED)Removing ssl_md5 executables$(RED)"
+		@echo "$(RED)Removing ft_ssl executables$(RED)"
 
 re: fclean all
